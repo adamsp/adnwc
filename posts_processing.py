@@ -79,16 +79,29 @@ class PostsProcessor:
         return False
     
     def is_link(self, item):
-        if len(item) > 0 and str(item).startswith((u'http', u'https')):
+        if len(item) > 0 and str(item).startswith(("http", "https")):
             return True
         return False
     
     # TODO Is it more efficient to move the variables outside?
-    # TODO This should remove only punctuation at either end.
+    # TODO Is translate efficient here?
     def clean_text(self, to_clean, clean_to=None):
         not_letters_or_digits = u'!"#%\'()*+,-./:;<=>?@[\]^_`{|}~'
         translate_table = dict((ord(char), clean_to) for char in not_letters_or_digits)
-        return to_clean.translate(translate_table)
+        # Trim non-chars from the start
+        while len(to_clean) > 0:
+            if len(to_clean[:1].translate(translate_table)) == 0:
+                to_clean = to_clean[1:]
+            else:
+                break
+        # Trim non-chars from the end
+        while len(to_clean) > 0:
+            end = len(to_clean)
+            if len(to_clean[end-1:].translate(translate_table)) == 0:
+                to_clean = to_clean[:end-1]
+            else:
+                break
+        return to_clean
     
     def is_symbol(self, item):
         # This includes smiley faces
