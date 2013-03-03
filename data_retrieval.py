@@ -6,6 +6,7 @@ Created on Mar 2, 2013
 
 import json
 import urllib
+from contextlib import closing
 
 class DataRetriever:
     def __init__(self, processors):
@@ -17,7 +18,11 @@ class DataRetriever:
         url = "https://alpha-api.app.net/stream/0/posts/stream/global"
         url += "?" + str(self.prev_max_post_id) + "&" + str(self.POST_COUNT)
         
-        with urllib.urlopen(url) as openurl:
+        # urllib doesn't actually support the 'with' statement:
+        # http://echochamber.me/viewtopic.php?f=11&t=26328&view=next#p819708
+        # See 'closing':
+        # http://docs.python.org/2/library/contextlib.html
+        with closing(urllib.urlopen(url)) as openurl:
             if not openurl.code == 200:
                 # TODO Can log errors here - result["meta"]["error_message"]
                 # Ignoring all non-200 is pretty basic handling.
