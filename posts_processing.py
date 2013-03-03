@@ -35,6 +35,16 @@ class PostsProcessor:
         self.MAX_ITEMS = max_items
         self.itemcount = {}
         self.top_items = TopItems(self.MAX_ITEMS)
+        # TODO How to handle different languages
+        # TODO Should stopwords be in base class?
+        # Stopwords sourced from here: http://jmlr.csail.mit.edu/papers/volume5/lewis04a/a11-smart-stop-list/english.stop
+        stopwords_file = "en_stopwords.txt"
+        try:
+            with open(stopwords_file, "r") as f:
+                self.stopwords = frozenset(line.strip() for line in f)
+        except IOError:
+            print "File " + stopwords_file + " does not exist."
+            
         
     def process_posts(self, posts):
         # Do nothing in base class
@@ -51,7 +61,11 @@ class PostsProcessor:
         return json.dumps(self.top_items.sorted_vals)
     
     def is_stopword(self, word, language):
-        # TODO
+        if len(language) > 2: # If > 2, then probably a locale
+            language = language[:2]
+        # if word in self.stopwords[language]:
+        if word in self.stopwords:
+            return True
         return False
     
     def is_mention(self, item):
@@ -65,14 +79,27 @@ class PostsProcessor:
         return False
     
     def is_link(self, item):
-        if len(item) > 0 and str(item).startswith(["http", "https"]):
+        if len(item) > 0 and str(item).startswith((u'http', u'https')):
+            return True
+        return False
+    
+    # TODO Is it more efficient to move the variables outside?
+    # TODO This should remove only punctuation at either end.
+    def clean_text(self, to_clean, clean_to=None):
+        not_letters_or_digits = u'!"#%\'()*+,-./:;<=>?@[\]^_`{|}~'
+        translate_table = dict((ord(char), clean_to) for char in not_letters_or_digits)
+        return to_clean.translate(translate_table)
+    
+    def is_symbol(self, item):
+        # This includes smiley faces
+        if len(self.clean_text(item)) == 0:
             return True
         return False
     
 class TopWordsProcessor(PostsProcessor):
 
-    def is_valid(self, word, language):
-        if self.is_stopword(word, language):
+    def is_valid(self, word, locale):
+        if self.is_stopword(self.clean_text(word), locale):
             return False
         if len(word) == 0:
             return False
@@ -80,18 +107,22 @@ class TopWordsProcessor(PostsProcessor):
             return False
         if self.is_mention(word):
             return False
+        if self.is_symbol(word):
+            return False
         return True
 
     def process_posts(self, posts):
         if len(posts) == 0:
                 return;
         for post in posts:
+            # It appears some posts don't have text.
+            if not post.has_key("text"):
+                continue;
             for word in post["text"].lower().split():
                 if not self.is_valid(word, post["user"]["locale"]):
                     continue
                 else:
-                    # TODO Clean word of punctuation etc before you add it.
-                    self.add_item(word)
+                    self.add_item(self.clean_text(word))
                 
     
 class TopMentionsProcessor(PostsProcessor):
