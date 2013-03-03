@@ -122,6 +122,8 @@ class TopWordsProcessor(PostsProcessor):
             return False
         if self.is_symbol(word):
             return False
+        if self.is_link(word):
+            return False
         return True
     
     def is_english(self, locale):
