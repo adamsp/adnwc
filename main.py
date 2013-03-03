@@ -1,6 +1,7 @@
 import web
 from posts_processing import TopWordsProcessor
 from data_retrieval import DataRetriever
+from threading import Timer
 
 posts_processor = TopWordsProcessor(50)
 
@@ -13,6 +14,8 @@ urls = (
     '/wc', 'wordcount'
 )
 
+update_interval = 3.0
+
 class index:
     def GET(self):
         return render.index()
@@ -20,12 +23,14 @@ class index:
 class wordcount:
     def GET(self):
         # TODO This should be automatic on a timer
-        data_retriever.retrieve_latest_data()
         return str(posts_processor.get_top_items_json())
+    
+def update_data():
+    Timer(update_interval, update_data).start()   
+    data_retriever.retrieve_latest_data()
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
     app.run()
-    
-#wc = wordcount()
-#wc.GET()
+
+update_data()

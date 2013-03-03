@@ -104,7 +104,7 @@ class PostsProcessor:
         return to_clean
     
     def is_symbol(self, item):
-        # This includes smiley faces
+        # This includes basic smiley faces
         if len(self.clean_text(item)) == 0:
             return True
         return False
