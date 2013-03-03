@@ -14,9 +14,15 @@ class DataRetriever:
         self.prev_max_post_id = 0
         self.POST_COUNT = 200
         
+    def get_latest_url(self, post_id):
+        url = ["https://alpha-api.app.net/stream/0/posts/stream/global?since_id="]
+        url.append(`post_id`)
+        url.append("&count=")
+        url.append(`self.POST_COUNT`)
+        return ''.join(url)
+        
     def retrieve_latest_data(self):
-        url = "https://alpha-api.app.net/stream/0/posts/stream/global"
-        url += "?" + str(self.prev_max_post_id) + "&" + str(self.POST_COUNT)
+        url = self.get_latest_url(self.prev_max_post_id)
         
         # urllib doesn't actually support the 'with' statement:
         # http://echochamber.me/viewtopic.php?f=11&t=26328&view=next#p819708
@@ -44,6 +50,6 @@ class DataRetriever:
         if len(posts) == 0:
                 return;
         if posts[0].has_key("id"):
-            post_id = posts[0]["id"]
+            post_id = int(posts[0]["id"])
             if post_id > self.prev_max_post_id:
                 self.prev_max_post_id = post_id
