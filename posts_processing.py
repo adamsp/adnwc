@@ -38,6 +38,7 @@ class PostsProcessor:
         # TODO How to handle different languages
         # TODO Should stopwords be in base class?
         # Stopwords sourced from here: http://jmlr.csail.mit.edu/papers/volume5/lewis04a/a11-smart-stop-list/english.stop
+        # Also the long-list from here: http://www.ranks.nl/resources/stopwords.html
         stopwords_file = "en_stopwords.txt"
         try:
             with open(stopwords_file, "r") as f:
