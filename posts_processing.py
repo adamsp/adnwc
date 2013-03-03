@@ -35,17 +35,6 @@ class PostsProcessor:
         self.MAX_ITEMS = max_items
         self.itemcount = {}
         self.top_items = TopItems(self.MAX_ITEMS)
-        # TODO How to handle different languages
-        # TODO Should stopwords be in base class?
-        # Stopwords sourced from here: http://jmlr.csail.mit.edu/papers/volume5/lewis04a/a11-smart-stop-list/english.stop
-        # Also the long-list from here: http://www.ranks.nl/resources/stopwords.html
-        stopwords_file = "en_stopwords.txt"
-        try:
-            with open(stopwords_file, "r") as f:
-                self.stopwords = frozenset(line.strip() for line in f)
-        except IOError:
-            print "File " + stopwords_file + " does not exist."
-            
         
     def process_posts(self, posts):
         # Do nothing in base class
@@ -60,14 +49,6 @@ class PostsProcessor:
         
     def get_top_items_json(self):
         return json.dumps(self.top_items.sorted_vals)
-    
-    def is_stopword(self, word, language):
-        if len(language) > 2: # If > 2, then probably a locale
-            language = language[:2]
-        # if word in self.stopwords[language]:
-        if word in self.stopwords:
-            return True
-        return False
     
     def is_mention(self, item):
         if len(item) > 0 and item[0] == "@":
@@ -104,24 +85,36 @@ class PostsProcessor:
                 break
         return to_clean
     
-    def is_symbol(self, item):
-        # This includes basic smiley faces
-        if len(self.clean_text(item)) == 0:
+class TopWordsProcessor(PostsProcessor):
+    def __init__(self, max_words, stopwords_file=None):
+        PostsProcessor.__init__(self, max_words)
+        # TODO How to handle different languages
+        # Stopwords sourced from here: http://jmlr.csail.mit.edu/papers/volume5/lewis04a/a11-smart-stop-list/english.stop
+        # Also the long-list from here: http://www.ranks.nl/resources/stopwords.html
+        if stopwords_file == None:
+            stopwords_file = "en_stopwords.txt"
+        try:
+            with open(stopwords_file, "r") as f:
+                self.stopwords = frozenset(line.strip() for line in f)
+        except IOError:
+            print "File " + stopwords_file + " does not exist."
+            self.stopwords = ()
+            
+    def is_stopword(self, word):
+        if word in self.stopwords:
             return True
         return False
-    
-class TopWordsProcessor(PostsProcessor):
 
-    def is_valid(self, word, locale):
-        if self.is_stopword(self.clean_text(word), locale):
+    def is_valid(self, word, cleaned_word):
+        if len(cleaned_word) == 0:
             return False
         if len(word) == 0:
+            return False
+        if self.is_stopword(cleaned_word):
             return False
         if self.is_hashtag(word):
             return False
         if self.is_mention(word):
-            return False
-        if self.is_symbol(word):
             return False
         if self.is_link(word):
             return False
@@ -145,10 +138,11 @@ class TopWordsProcessor(PostsProcessor):
             if not self.is_english(post["user"]["locale"]):
                 continue
             for word in post["text"].lower().split():
-                if not self.is_valid(word, post["user"]["locale"]):
+                cleaned_word = self.clean_text(word)
+                if not self.is_valid(word, cleaned_word):
                     continue
                 else:
-                    self.add_item(self.clean_text(word))
+                    self.add_item(cleaned_word)
                 
     
 class TopMentionsProcessor(PostsProcessor):
