@@ -14,16 +14,27 @@ class DataRetriever:
         self.POST_COUNT = 200
         
     def retrieve_latest_data(self):
-        # TODO Need to take into account API failure, rate limiting, etc.
         url = "https://alpha-api.app.net/stream/0/posts/stream/global"
         url += "?" + str(self.prev_max_post_id) + "&" + str(self.POST_COUNT)
-        result = json.load(urllib.urlopen(url))
-        if result.has_key("data"):
-            posts = result["data"]
-            self.update_prev_max_post_id(posts)
-            for processor in self.processors:
-                processor.process_posts(posts)
-                
+        
+        with urllib.urlopen(url) as openurl:
+            if not openurl.code == 200:
+                # TODO Can log errors here - result["meta"]["error_message"]
+                # Ignoring all non-200 is pretty basic handling.
+                # See http://developers.app.net/docs/basics/responses/#error-conditions
+                return
+            try:
+                result = json.load(openurl)
+                if result.has_key("data"):
+                    posts = result["data"]
+                    self.update_prev_max_post_id(posts)
+                    for processor in self.processors:
+                        processor.process_posts(posts)
+            except ValueError as e:
+                # TODO Since we're checking response code, do we need try block?
+                print e
+                return
+            
     def update_prev_max_post_id(self, posts):
         if len(posts) == 0:
                 return;
