@@ -123,6 +123,13 @@ class TopWordsProcessor(PostsProcessor):
         if self.is_symbol(word):
             return False
         return True
+    
+    def is_english(self, locale):
+        if len(locale) > 2:
+            locale = locale[:2]
+        if locale.lower() == "en":
+            return True
+        return False
 
     def process_posts(self, posts):
         if len(posts) == 0:
@@ -131,6 +138,9 @@ class TopWordsProcessor(PostsProcessor):
             # It appears some posts don't have text.
             if not post.has_key("text"):
                 continue;
+            # FIXME Dirty, dirty hack.
+            if not self.is_english(post["user"]["locale"]):
+                continue
             for word in post["text"].lower().split():
                 if not self.is_valid(word, post["user"]["locale"]):
                     continue
