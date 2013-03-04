@@ -18,7 +18,7 @@ update_interval = 3.0
 
 class index:
     def GET(self):
-        return render.index()
+        raise web.seeother('/static/index.html')
 
 class wordcount:
     def GET(self):
