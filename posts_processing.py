@@ -61,14 +61,14 @@ class PostsProcessor:
         return False
     
     def is_link(self, item):
-        if len(item) > 0 and str(item).startswith(("http", "https")):
+        if len(item) > 0 and item.startswith(("http", "https")):
             return True
         return False
     
     # TODO Is it more efficient to move the variables outside?
     # TODO Is translate efficient here?
     def clean_text(self, to_clean, clean_to=None):
-        not_letters_or_digits = u'!"#%\'()*+,-./:;<=>?@[\]^_`{|}~'
+        not_letters_or_digits = u'!"&#%\'()*+,-./:;<=>?@[\]^_`{|}~'
         translate_table = dict((ord(char), clean_to) for char in not_letters_or_digits)
         # Trim non-chars from the start
         while len(to_clean) > 0:
