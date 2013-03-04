@@ -5,6 +5,8 @@ Created on 2/03/2013
 '''
 import operator
 import json
+import codecs
+import unicodedata
 
 class TopItems:
     def __init__(self, max_words):
@@ -65,24 +67,26 @@ class PostsProcessor:
             return True
         return False
     
-    # TODO Is it more efficient to move the variables outside?
-    # TODO Is translate efficient here?
-    def clean_text(self, to_clean, clean_to=None):
-        not_letters_or_digits = u'!"&#%\'()*+,-./:;<=>?@[\]^_`{|}~'
-        translate_table = dict((ord(char), clean_to) for char in not_letters_or_digits)
-        # Trim non-chars from the start
+    def clean_text(self, to_clean):
+        # Trim non-chars (Punctuation - P, Symbols - S) from the start
         while len(to_clean) > 0:
-            if len(to_clean[:1].translate(translate_table)) == 0:
+            if unicodedata.category(to_clean[:1]).startswith(('P', 'S')):
                 to_clean = to_clean[1:]
             else:
                 break
         # Trim non-chars from the end
         while len(to_clean) > 0:
             end = len(to_clean)
-            if len(to_clean[end-1:].translate(translate_table)) == 0:
+            if unicodedata.category(to_clean[end-1:]).startswith(('P', 'S')):
                 to_clean = to_clean[:end-1]
             else:
                 break
+            
+        if len(to_clean) > 0:
+            # FIXME Probably preferable/faster to just include "i\u2019m" etc in stopwords file.
+            # There appears to be a lot of input using \u2019 instead of ASCII apostrophe.
+            if to_clean.find(u'\u2019') > -1:
+                to_clean = to_clean.replace(u'\u2019', "'")
         return to_clean
     
 class TopWordsProcessor(PostsProcessor):
@@ -94,7 +98,7 @@ class TopWordsProcessor(PostsProcessor):
         if stopwords_file == None:
             stopwords_file = "en_stopwords.txt"
         try:
-            with open(stopwords_file, "r") as f:
+            with codecs.open(stopwords_file, mode='r', encoding='utf-8') as f:
                 self.stopwords = frozenset(line.strip() for line in f)
         except IOError:
             print "File " + stopwords_file + " does not exist."
