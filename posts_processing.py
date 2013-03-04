@@ -18,8 +18,8 @@ class TopItems:
         
     def add_word(self, word, count):
         if count > self.lowest_count or not self.is_full():
-            if self.is_full():
-                self.words.pop(self.lowest_word, "");
+            if self.is_full() and not self.words.has_key(word):
+                del self.words[self.lowest_word]
             self.words[word] = count
             self.update_lowest_count();
             
