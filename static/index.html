@@ -9,19 +9,20 @@
             /*!
              * Create an array of word objects, each representing a word in the cloud
              */
-            var word_array = [
-                              {text: "Lorem", weight: 15},
-                              {text: "Ipsum", weight: 9, link: "http://jquery.com/"},
-                              {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-                              {text: "Sit", weight: 7},
-                              {text: "Amet", weight: 5}
-                              // ...as many words as you want
-                              ];
-            $(function() {$("#example").jQCloud(word_array);});
+            var word_array = [];
+            $.getJSON(
+                      '/wc',
+                      function (data) {
+                      for(var i = 0; i < data.length; i++){
+                      word_array.push({text: data[i][0], weight: data[i][1]});
+                      }
+                      $(function() {$("#cloud").jQCloud(word_array);});
+                      });
+            
             </script>
         
     </head>
     <body>
-        <div id="example" style="width: 550px; height: 350px;"></div>
+        <div id="cloud" style="width: 550px; height: 350px;"></div>
     </body>
 </html>
