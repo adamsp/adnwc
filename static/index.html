@@ -14,8 +14,9 @@
                       '/wc',
                       function (data) {
                       for(var i = 0; i < data.length; i++){
-                      word_array.push({text: data[i][0], weight: data[i][1]});
-                      }
+                      word_array.push({text: data[i][0], weight: data[i][1], html: {
+                                      title: data[i][0] + ": " + data[i][1] + " occurrences."}})
+                      };
                       $(function() {$("#cloud").jQCloud(word_array);});
                       });
             
