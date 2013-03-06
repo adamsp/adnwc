@@ -1,0 +1,39 @@
+div {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#header {
+  background-color: #0cf;
+  height: 40px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+#footer {
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+li {
+  display: inline-block;
+}
+
+#header li {
+  font-family: Helvetica, Arial, sans-serif;
+  padding: 4px;
+  border: 2px solid #a0ddff;
+  border-radius: 5px;
+  color: white;
+  margin-top: 5px;
+}
+
+#footer li {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 0.7e m;
+}

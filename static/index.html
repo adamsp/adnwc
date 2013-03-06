@@ -3,6 +3,7 @@
     <head>
         <title>App.Net Word Cloud</title>
         <link rel="stylesheet" type="text/css" href="/static/css/jqcloud.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/page.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript" src="/static/scripts/jqcloud-1.0.3.min.js"></script>
         <script type="text/javascript">
@@ -24,6 +25,25 @@
         
     </head>
     <body>
+        <div id="header">
+
+            <ul>
+                <li>Words</li>
+                <li>Mentions</li>
+                <li>Hashtags</li>
+                <li>Links</li>
+            </ul>
+
+        </div>
         <div id="cloud" style="width: 550px; height: 350px;"></div>
+        <div id="footer">
+            <ul>
+                <li><a href="/about">About</a></li>
+                <li><a href="https://github.com/adamsp/adnwc">Github</a></li>
+                <li><a href="https://twitter.com/adamsnz">Twitter</a></li>
+                <li><a href="https://alpha.app.net/global/">ADN Global Stream</a></li>
+            </ul>
+        </div>
     </body>
 </html>
+
