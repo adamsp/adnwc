@@ -38,6 +38,13 @@ class PostsProcessor:
         self.itemcount = {}
         self.top_items = TopItems(self.MAX_ITEMS)
         
+    def save_data(self, data_date, data_uploader):
+        data_uploader.save_data(data_date, self.top_items)
+        
+    def clear_data(self):
+        self.top_items = TopItems(self.MAX_ITEMS)
+        self.itemcount = {}
+        
     def process_posts(self, posts):
         # Do nothing in base class
         return
