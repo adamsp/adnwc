@@ -180,7 +180,7 @@ class TopHashtagsProcessor(PostsProcessor):
                 self.add_item(tag["name"].lower())
 
 class TopLinksProcessor(PostsProcessor):
-    # Standardise all links, 
+    # Standardise all links - so bit.ly/abcd/ matches bit.ly/abcd
     def standardise_link(self, link):
         length = len(link)
         if length > 0:

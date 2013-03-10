@@ -6,9 +6,9 @@ from datetime import datetime
 from data_upload import DataUploader
 
 posts_processor = posts_processing.TopWordsProcessor(50)
-mentions_processor = posts_processing.TopMentionsProcessor(50)
-hashtags_processor = posts_processing.TopHashtagsProcessor(50)
-links_processor = posts_processing.TopLinksProcessor(50)
+mentions_processor = posts_processing.TopMentionsProcessor(30)
+hashtags_processor = posts_processing.TopHashtagsProcessor(30)
+links_processor = posts_processing.TopLinksProcessor(20)
 
 processors = [posts_processor, mentions_processor, 
               hashtags_processor, links_processor]
