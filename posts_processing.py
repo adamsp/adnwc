@@ -164,13 +164,37 @@ class TopWordsProcessor(PostsProcessor):
                 
     
 class TopMentionsProcessor(PostsProcessor):
-    pass
+    def process_posts(self, posts):
+        if len(posts) == 0:
+                return;
+        for post in posts:
+            for mention in post["entities"]["mentions"]:
+                self.add_item(mention["name"].lower())
 
 class TopHashtagsProcessor(PostsProcessor):
-    pass
+    def process_posts(self, posts):
+        if len(posts) == 0:
+                return;
+        for post in posts:
+            for tag in post["entities"]["hashtags"]:
+                self.add_item(tag["name"].lower())
 
 class TopLinksProcessor(PostsProcessor):
-    pass
+    # Standardise all links, 
+    def standardise_link(self, link):
+        length = len(link)
+        if length > 0:
+            if link[length-1:] == u'/':
+                link = link[:length-1]
+        return link
+    
+    def process_posts(self, posts):
+        if len(posts) == 0:
+                return;
+        for post in posts:
+            for link in post["entities"]["links"]:
+                url = self.standardise_link(link["url"])
+                self.add_item(url)
                 
 
                 

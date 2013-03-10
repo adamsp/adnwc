@@ -1,13 +1,17 @@
 import web
-from posts_processing import TopWordsProcessor
+import posts_processing
 from data_retrieval import DataRetriever
 from threading import Timer
 from datetime import datetime
 from data_upload import DataUploader
 
-posts_processor = TopWordsProcessor(50)
+posts_processor = posts_processing.TopWordsProcessor(50)
+mentions_processor = posts_processing.TopMentionsProcessor(50)
+hashtags_processor = posts_processing.TopHashtagsProcessor(50)
+links_processor = posts_processing.TopLinksProcessor(50)
 
-processors = [posts_processor]
+processors = [posts_processor, mentions_processor, 
+              hashtags_processor, links_processor]
 
 data_retriever = DataRetriever(processors)
 
@@ -15,7 +19,10 @@ render = web.template.render('templates/')
 
 urls = (
     '/', 'index',
-    '/wc', 'wordcount'
+    '/wc', 'wordcount',
+    '/mentions', 'mentions',
+    '/hashtags', 'hashtags',
+    '/links', 'links'
 )
 
 update_interval = 3.0
@@ -28,6 +35,18 @@ class index:
 class wordcount:
     def GET(self):
         return str(posts_processor.get_top_items_json())
+    
+class mentions:
+    def GET(self):
+        return str(mentions_processor.get_top_items_json())
+    
+class hashtags:
+    def GET(self):
+        return str(hashtags_processor.get_top_items_json())
+    
+class links:
+    def GET(self):
+        return str(links_processor.get_top_items_json())
 
 def update_data():
     new_date = datetime.utcnow()
