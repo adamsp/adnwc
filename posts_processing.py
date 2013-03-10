@@ -12,7 +12,7 @@ class TopItems:
     def __init__(self, max_words):
         self.max_words = max_words
         self.lowest_count = -1
-        self.lowest_word = ""
+        self.lowest_word = ''
         self.words = {}
         self.sorted_vals = []
         
@@ -31,6 +31,12 @@ class TopItems:
         sorted_length = len(self.sorted_vals)
         self.lowest_word = self.sorted_vals[sorted_length - 1][0]
         self.lowest_count = self.sorted_vals[sorted_length - 1][1]
+        
+    def clear_data(self):
+        self.lowest_count = -1
+        self.lowest_word = ''
+        self.words.clear()
+        self.sorted_vals = []
 
 class PostsProcessor:
     def __init__(self, max_items): 
@@ -42,8 +48,9 @@ class PostsProcessor:
         data_uploader.save_data(data_date, self.top_items)
         
     def clear_data(self):
-        self.top_items = TopItems(self.MAX_ITEMS)
-        self.itemcount = {}
+        self.top_items.clear_data()
+        for item in self.itemcount:
+            self.itemcount[item] = 0
         
     def process_posts(self, posts):
         # Do nothing in base class
