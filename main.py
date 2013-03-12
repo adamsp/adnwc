@@ -15,8 +15,6 @@ processors = [posts_processor, mentions_processor,
 
 data_retriever = DataRetriever(processors)
 
-render = web.template.render('templates/')
-
 urls = (
     '/', 'index',
     '/wc', 'wordcount',
@@ -24,6 +22,8 @@ urls = (
     '/hashtags', 'hashtags',
     '/links', 'links'
 )
+
+app = web.application(urls, globals())
 
 update_interval = 3.0
 current_date = datetime.utcnow()    
@@ -60,8 +60,5 @@ def update_data():
     data_retriever.retrieve_latest_data()
     Timer(update_interval, update_data).start()
 
-if __name__ == "__main__":
-    app = web.application(urls, globals())
-    app.run()
-
+app = app.gaerun()
 update_data()
