@@ -6,6 +6,7 @@ Created on Mar 2, 2013
 
 import json
 from google.appengine.api import urlfetch
+from google.appengine.api import memcache
 
 class DataRetriever:
     def __init__(self, processors):
@@ -37,6 +38,7 @@ class DataRetriever:
             self.update_prev_max_post_id(new_max_post_id)
             for processor in self.processors:
                 processor.process_posts(posts)
+                memcache.set(processor.name, processor.get_top_items_json())
             
     def update_prev_max_post_id(self, post_id):
         if post_id > self.prev_max_post_id:
