@@ -2,6 +2,9 @@
 Created on Mar 16, 2013
 
 @author: Adam Speakman
+@contact: http://github.com/adamsp
+@contact: http://speakman.net.nz
+@license: http://www.apache.org/licenses/LICENSE-2.0.html
 '''
 import posts_processing
 import web
@@ -27,6 +30,9 @@ data_retriever = DataRetriever(processors)
 update_interval = 3.0
 current_date = datetime.utcnow()
 
+# We don't handle any requests - will return a 404.
+# This is OK, as GAE treats a 404 as succesful startup.
+# All our data gets saved to memcache, and the frontend pulls from there.
 urls = ()
 
 app = web.application(urls, globals())
@@ -39,9 +45,9 @@ def save_processor_data():
         processor.clear_data()
 
 def update_data():
+    logging.info('Backend instance has started.')
     while True and not runtime.is_shutting_down():
         new_date = datetime.utcnow()
-        logging.info('Updating data at ' + str(new_date))
         global current_date
         if not new_date.day == current_date.day:
             save_processor_data()

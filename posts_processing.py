@@ -1,7 +1,10 @@
 '''
 Created on 2/03/2013
 
-@author: Adam
+@author: Adam Speakman
+@contact: http://github.com/adamsp
+@contact: http://speakman.net.nz
+@license: http://www.apache.org/licenses/LICENSE-2.0.html
 '''
 import operator
 import json

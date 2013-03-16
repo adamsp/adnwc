@@ -1,10 +1,14 @@
 '''
 Created on Mar 2, 2013
 
-@author: adam
+@author: Adam Speakman
+@contact: http://github.com/adamsp
+@contact: http://speakman.net.nz
+@license: http://www.apache.org/licenses/LICENSE-2.0.html
 '''
 
 import json
+import logging
 from google.appengine.api import urlfetch
 from google.appengine.api import memcache
 
@@ -25,9 +29,8 @@ class DataRetriever:
         url = self.get_latest_url(self.prev_max_post_id)
         response = urlfetch.fetch(url)
         if not response.status_code == 200:
-            # TODO Can log errors here - result["meta"]["error_message"]
-            # Ignoring all non-200 is pretty basic handling.
-            # See http://developers.app.net/docs/basics/responses/#error-conditions
+            logging.error('Request failed with status code ' + str(response.status_code)
+                          + ' and content: ' + str(response.content))
             return
         result = json.loads(response.content)
         if result.has_key("data"):
