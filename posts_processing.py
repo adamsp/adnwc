@@ -39,7 +39,8 @@ class TopItems:
         self.sorted_vals = []
 
 class PostsProcessor:
-    def __init__(self, max_items): 
+    def __init__(self, max_items, name):
+        self.name = name 
         self.MAX_ITEMS = max_items
         self.itemcount = {}
         self.top_items = TopItems(self.MAX_ITEMS)
@@ -104,8 +105,8 @@ class PostsProcessor:
         return to_clean
     
 class TopWordsProcessor(PostsProcessor):
-    def __init__(self, max_words, stopwords_file=None):
-        PostsProcessor.__init__(self, max_words)
+    def __init__(self, max_words, name, stopwords_file=None):
+        PostsProcessor.__init__(self, max_words, name)
         # TODO How to handle different languages
         # Stopwords sourced from here: http://jmlr.csail.mit.edu/papers/volume5/lewis04a/a11-smart-stop-list/english.stop
         # Also the long-list from here: http://www.ranks.nl/resources/stopwords.html
