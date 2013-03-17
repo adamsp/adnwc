@@ -10,6 +10,13 @@ div {
   text-align: center;
 }
 
+#title {
+  text-align: center;
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 1em;
+  color: #09f;
+}
+
 #footer {
   text-align: center;
 }
