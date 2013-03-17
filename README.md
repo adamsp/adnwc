@@ -3,7 +3,7 @@ App.net Word Cloud
 
 A simple last-24-hours word cloud of the most common words on App.net. Records the most common words, hashtags, links and mentions and provides a website for viewing these. Resets at midnight UTC.
 
-Currently running on [Google App Engine](http://adnwordcloud.appspot.com/static/index.html), using [web.py](http://webpy.org) (also on [Github](http://github.com/webpy/webpy)) to serve pages.
+Currently running on [Google App Engine](http://www.adnwc.net), using [web.py](http://webpy.org) (also on [Github](http://github.com/webpy/webpy)) to serve pages.
 
 Raw JSON for each of the common items is available at `/wc`, `/hashtags`, `/links` and `/mentions`. The service is currently in __beta__ and the JSON _will_ change - there will be  at the least the addition of a date object indicating what day the results are recorded for.
 
