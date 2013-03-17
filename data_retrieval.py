@@ -42,10 +42,10 @@ class DataRetriever:
             self.update_prev_max_post_id(new_max_post_id)
             for processor in self.processors:
                 processor.process_posts(posts)
-                latest_json = json.dumps(dict(meta=dict(time=datetime.utcnow(),
+                latest_json = json.dumps(dict(meta=dict(time=str(datetime.utcnow()),
                                                         result='success',
                                                         content=processor.name), 
-                                              data=processor.get_top_items_json()))
+                                              data=processor.get_top_items()))
                 memcache.set(processor.name, latest_json)
             
     def update_prev_max_post_id(self, post_id):

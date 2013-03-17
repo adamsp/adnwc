@@ -46,12 +46,11 @@ function updateItems(endpoint, prefix) {
               endpoint,
               function (json) {
               word_array.length = 0;
-              json = JSON.parse(json);
               var meta = json["meta"];
               if (meta["result"] != "success") {
                 $("#count_updated_time").html('Something went wrong.');
               } else {
-                data = json["data"];
+                var data = json["data"];
                 $("#count_updated_time").html('Count last updated at ' + meta["time"]);
                 for(var i = 0; i < data.length; i++){
                   word_array.push({

@@ -67,8 +67,8 @@ class PostsProcessor:
             self.itemcount[item] = 1
         self.top_items.add_word(item, self.itemcount[item])
         
-    def get_top_items_json(self):
-        return json.dumps(self.top_items.sorted_vals)
+    def get_top_items(self):
+        return self.top_items.sorted_vals
     
     def is_mention(self, item):
         if len(item) > 0 and item[0] == "@":
