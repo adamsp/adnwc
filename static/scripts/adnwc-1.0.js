@@ -41,20 +41,31 @@ function updateItems(endpoint, prefix) {
         setTimeout(updateItems(endpoint, prefix), 200);
         return;
     }
+    $("#count_updated_time").html('Loading...');
     $.getJSON(
               endpoint,
-              function (data) {
+              function (json) {
               word_array.length = 0;
-              for(var i = 0; i < data.length; i++){
-              word_array.push({
-                              text: prefix + data[i][0],
-                              weight: data[i][1],
-                              html: {
-                              title: prefix + data[i][0] + ": " + data[i][1] + " occurrences."
-                              }})
-              };
+              json = JSON.parse(json);
+              var meta = json["meta"];
+              if (meta["result"] != "success") {
+                $("#count_updated_time").html('Something went wrong.');
+              } else {
+                data = json["data"];
+                $("#count_updated_time").html('Count last updated at ' + meta["time"]);
+                for(var i = 0; i < data.length; i++){
+                  word_array.push({
+                                text: prefix + data[i][0],
+                                weight: data[i][1],
+                                html: {
+                                title: prefix + data[i][0] + ": " + data[i][1] + " occurrences."
+                                  }});
+                };
+              }
               drawCloud(word_array);
-              });
+              }).error(function() {
+                       $("#count_updated_time").html('Something went wrong.');
+                       });
 }
 
 updateItems('/wc', '')

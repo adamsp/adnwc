@@ -9,6 +9,7 @@ Created on Mar 2, 2013
 
 import json
 import logging
+from datetime import datetime
 from google.appengine.api import urlfetch
 from google.appengine.api import memcache
 
@@ -41,7 +42,11 @@ class DataRetriever:
             self.update_prev_max_post_id(new_max_post_id)
             for processor in self.processors:
                 processor.process_posts(posts)
-                memcache.set(processor.name, processor.get_top_items_json())
+                latest_json = json.dumps(dict(meta=dict(time=datetime.utcnow(),
+                                                        result='success',
+                                                        content=processor.name), 
+                                              data=processor.get_top_items_json()))
+                memcache.set(processor.name, latest_json)
             
     def update_prev_max_post_id(self, post_id):
         if post_id > self.prev_max_post_id:
