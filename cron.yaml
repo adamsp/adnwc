@@ -1,0 +1,4 @@
+cron:
+- description: content update
+  url: /update
+  schedule: every 1 minutes
