@@ -1,5 +1,0 @@
-backends:
-- name: adnwcbackend
-  start: adnwc_backend.app
-  class: B1
-  options: public

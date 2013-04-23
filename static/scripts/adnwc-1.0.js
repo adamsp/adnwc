@@ -51,7 +51,7 @@ function updateItems(endpoint, prefix) {
                 $("#count_updated_time").html('Something went wrong.');
               } else {
                 var data = json["data"];
-                $("#count_updated_time").html('Count last updated at ' + meta["time"]);
+                $("#count_updated_time").html('Count last updated at ' + meta["time"] + ' (UTC)');
                 for(var i = 0; i < data.length; i++){
                   word_array.push({
                                 text: prefix + data[i][0],

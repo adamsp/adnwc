@@ -10,6 +10,7 @@ import operator
 import json
 import codecs
 import unicodedata
+from datetime import datetime
 
 class TopItems:
     def __init__(self, max_words):
@@ -47,6 +48,7 @@ class PostsProcessor:
         self.MAX_ITEMS = max_items
         self.itemcount = {}
         self.top_items = TopItems(self.MAX_ITEMS)
+        self.latest_time = datetime.utcnow()
         
     def save_data(self, data_date, data_uploader):
         data_uploader.save_data(data_date, self.top_items)
@@ -69,6 +71,12 @@ class PostsProcessor:
         
     def get_top_items(self):
         return self.top_items.sorted_vals
+    
+    def get_json(self):
+        return json.dumps(dict(meta=dict(time=str(self.latest_time),
+                                                        result='success',
+                                                        content=self.name), 
+                                                data=self.get_top_items()))
     
     def is_mention(self, item):
         if len(item) > 0 and item[0] == "@":
@@ -165,6 +173,7 @@ class TopWordsProcessor(PostsProcessor):
                     continue
                 else:
                     self.add_item(cleaned_word)
+        self.latest_time = datetime.utcnow()
                 
     
 class TopMentionsProcessor(PostsProcessor):
@@ -174,6 +183,7 @@ class TopMentionsProcessor(PostsProcessor):
         for post in posts:
             for mention in post["entities"]["mentions"]:
                 self.add_item(mention["name"].lower())
+        self.latest_time = datetime.utcnow()
 
 class TopHashtagsProcessor(PostsProcessor):
     def process_posts(self, posts):
@@ -182,6 +192,7 @@ class TopHashtagsProcessor(PostsProcessor):
         for post in posts:
             for tag in post["entities"]["hashtags"]:
                 self.add_item(tag["name"].lower())
+        self.latest_time = datetime.utcnow()
 
 class TopLinksProcessor(PostsProcessor):
     # Standardise all links - so bit.ly/abcd/ matches bit.ly/abcd
@@ -199,6 +210,7 @@ class TopLinksProcessor(PostsProcessor):
             for link in post["entities"]["links"]:
                 url = self.standardise_link(link["url"])
                 self.add_item(url)
+        self.latest_time = datetime.utcnow()
                 
 
                 
